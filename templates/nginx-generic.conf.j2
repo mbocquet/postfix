@@ -1,0 +1,13 @@
+# {{ ansible_managed }}. role: {{ role_name }}, template: nginx-generic.conf.j2
+
+server {
+    listen {{ item.exposed_port }};
+    listen [::]:{{ item.exposed_port }};
+    server_name {{ item.servername }};
+    root {{ item.web_root }};
+    location {{ item.url }} {
+        proxy_pass          http://{{ item.host }}:{{ item.port }};
+        proxy_redirect      default;
+        proxy_set_header    Host $host;
+    }
+}

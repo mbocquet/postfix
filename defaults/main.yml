@@ -1,0 +1,63 @@
+---
+# defaults file for nginx
+
+# nginx_dhparam : parameters to construct nginx dhparam file
+nginx_dhparam:
+  path: /etc/nginx
+  name: dhparam
+  bits: 2048
+
+# nginx_dhparam_file : here we use the previous parameters to set the dhparam
+# file path and name.
+#
+# to use /etc/nginx/dhparam2048.pem :
+nginx_dhparam_file: "{{ nginx_dhparam.path }}/{{ nginx_dhparam.name }}{{ nginx_dhparam.bits }}.pem"
+#
+# to use /etc/nginx/dhparam.pem :
+# nginx_dhparam_file: "{{ nginx_dhparam.path }}/{{ nginx_dhparam.name }}.pem"
+
+# nginx_sites : dict variable to define sites
+#
+# nginx_sites:
+#   # disable the default site, not touching the file in place
+#   # /etc/nginx/sites-available/default
+#   - name: default
+#     available: true
+#     enabled: false
+#   # www.example.org site
+#   - name: www.example.org
+#     index: '00'
+#     servername: 'example.org www.example.org'
+#     exposed_port: 443
+#     web_root: /var/www/example.org/html
+#     certname: www.example.org
+#     # nginx-example.org.conf.j2 should exist as nginx template somewhere
+#     template: example.org
+#     # available and enabled are defaults so non mandatory
+#     # available: true
+#     # enabled: true
+#   # reverse proxy to remotehost:80
+#   - name: remotehost
+#     servername: 'remotehost remotehost.local.net'
+#     web_root: /var/www
+#     url: /
+#     exposed_port: 80
+#     host: remotehost
+#     port: 80
+#     available: true
+#     enabled: true
+#   # reverse proxy to localhost:5000
+#   - name: myapp
+#     url: /myapp
+#     host: localhost
+#     servername: myapp.local.net
+#     exposed_port: 80
+#     port: 5000
+#     # nginx-myapp.conf.j2 should exist as nginx template somewhere
+#     template: myapp
+#     available: true
+#     enabled: true
+#   # remove site file and link for myapp2
+#   - name: myapp2
+#     available: false
+#     enabled: false
