@@ -31,6 +31,7 @@
     src: 'nginx-{{ item.template | default("generic") }}.conf.j2'
     dest: '/etc/nginx/sites-available/{{ item.name }}'
     mode: 0644
+  notify: reload nginx
   loop: '{{ nginx_sites }}'
   when:
     - item.name != 'default'
@@ -61,7 +62,7 @@
     src: '/etc/nginx/sites-available/{{ item.name }}'
     path: '/etc/nginx/sites-enabled/{{ item.index|default("") }}{{ item.name }}'
     state: 'link'
-  notify: restart nginx
+  notify: reload nginx
   loop: '{{ nginx_sites }}'
   when:
     - item.available is not defined
@@ -78,7 +79,7 @@
   file:
     path: '/etc/nginx/sites-enabled/{{ item.index|default("") }}{{ item.name }}'
     state: absent
-  notify: restart nginx
+  notify: reload nginx
   loop: '{{ nginx_sites }}'
   when:
     - item.enabled is defined
@@ -88,4 +89,3 @@
     - nginx
     - vhost
     - link
-...
