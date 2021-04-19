@@ -1,0 +1,60 @@
+---
+# defaults file for postfix
+
+postfix_packages:
+  - postfix
+  - bsd-mailx
+
+# postfix_access
+# handle postfix access table entries
+# postfix_access:
+#   - '# This is a test'
+#   - 'x.x.x.x REJECT "You are rejected"'
+
+# postfix_networks
+# handle mynetworks postfix settings
+# postfix_networks:
+#   - '# defaults from postfix config'
+#   - '127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128'
+#   - '# These addresses can relay'
+#   - '11.12.13.14'
+
+# transport table
+# postfix_transport:
+#   - domain: 'example.org'
+#     protocol: 'smtp'
+#     destination: 'smtp.example.org'
+#   - domain: 'example.net'
+#     protocol: 'smtp'
+#     destination: 'smtp.example.net'
+
+# postfix_domain (mandatory)
+# Default postfix domain which will be configured in /etc/mailname.
+# postfix_domain: 'example.org'
+
+# postfix_relayhost
+# For satellite systems. All emails are forwarded to the relayhost.
+# postfix_relayhost: 'smtp.example.org'
+# With domain name only, MX lookups are used.
+# postfix_relayhost: 'example.org'
+
+# postfix_main_mailer_type
+# Default to "No configuration" if undefined
+# Should be set to one of the following values (case sensitive) :
+#   * No configuration
+#   * Internet Site
+#   * Internet with smarthost
+#   * Satellite system
+#   * Local only
+# postfix_main_mailer_type: 'Internet Site'
+
+# postfix_inet_interfaces
+# Handle postfix listening interface(s)
+# postfix_inet_interfaces: loopback-only
+# postfix_inet_interfaces: all
+# postfix_inet_interfaces: '127.0.0.1, [::1], 192.168.1.2'
+
+# postfix_root_alias
+# root email alias
+# postfix_root_alias: 'me@mydomain.net'
+# postfix_root_alias: 'me@mydomain.net, them@theirdomain.net'

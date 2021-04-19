@@ -1,0 +1,28 @@
+---
+galaxy_info:
+  author: Mathias BOCQUET
+  description: Ansible postfix role
+  company: Sekoya.org
+
+  issue_tracker_url: https://git.sekoya.org/mb/postfix/issues
+
+  license: GPLv3
+
+  min_ansible_version: 2.4
+
+  platforms:
+    - name: Debian
+      versions:
+        - jessie
+        - stretch
+        - buster
+        - bullseye
+        - sid
+
+  galaxy_tags:
+    - admin
+    - postfix
+    - smtp
+    - mail
+
+dependencies: []

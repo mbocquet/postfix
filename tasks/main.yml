@@ -1,0 +1,167 @@
+---
+# tasks file for postfix
+
+- name: "destinations (debconf)"
+  debconf:
+    name: postfix
+    question: postfix/destinations
+    value: ''
+    vtype: string
+  tags:
+    - postfix
+    - destination
+
+- name: "relayhost (debconf)"
+  debconf:
+    name: postfix
+    question: postfix/relayhost
+    value: "{{ postfix_relayhost }}"
+    vtype: string
+  when:
+    - postfix_relayhost is defined
+  tags:
+    - postfix
+    - relayhost
+
+- name: "main mailer type (debconf)"
+  debconf:
+    name: postfix
+    question: postfix/main_mailer_type
+    value: "{{ postfix_main_mailer_type | default('No configuration') }}"
+    vtype: select
+  when:
+    - postfix_main_mailer_type is undefined
+      or postfix_main_mailer_type in ["No configuration","Internet Site","Internet with smarthost","Satellite system","Local only"]
+  tags:
+    - postfix
+    - mailertype
+
+- name: "package"
+  package:
+    name: "{{ postfix_packages }}"
+  notify: send test email
+  tags:
+    - postfix
+    - package
+
+- name: "/etc/mailname"
+  lineinfile:
+    dest: '/etc/mailname'
+    regexp: '^.*$'
+    line: '{{ postfix_domain }}'
+    backup: true
+    create: true
+    mode: 0644
+  when:
+    - postfix_domain is defined
+  notify: restart postfix
+  tags:
+    - postfix
+    - domain
+
+- name: "check main.cf"
+  stat:
+    path: /etc/postfix/main.cf
+  register: main_cf
+  tags:
+    - postfix
+    - main_cf
+
+- block:
+  - name: "interfaces"
+    lineinfile:
+      dest: /etc/postfix/main.cf
+      regexp: '^inet_interfaces.*=.*'
+      line: 'inet_interfaces = {{ postfix_inet_interfaces }}'
+      backup: true
+    when:
+      - postfix_inet_interfaces is defined
+    notify: restart postfix
+    tags:
+      - postfix
+      - interfaces
+
+  - name: "myorigin"
+    lineinfile:
+      dest: '/etc/postfix/main.cf'
+      regexp: '^myorigin.*=.*'
+      line: 'myorigin = /etc/mailname'
+      backup: true
+    notify: restart postfix
+    tags:
+      - postfix
+      - destination
+
+  - name: "destination"
+    lineinfile:
+      dest: '/etc/postfix/main.cf'
+      regexp: '^mydestination.*=.*'
+      line: 'mydestination ='
+      backup: true
+    notify: restart postfix
+    tags:
+      - postfix
+      - destination
+
+  - name: "relayhost"
+    lineinfile:
+      dest: '/etc/postfix/main.cf'
+      regexp: '^relayhost.*=.*'
+      line: "relayhost = {{ postfix_relayhost }}"
+      backup: true
+    when:
+      - postfix_relayhost is defined
+    notify: restart postfix
+    tags:
+      - postfix
+      - relayhost
+
+  - name: "root alias"
+    lineinfile:
+      dest: '/etc/aliases'
+      line: 'root: {{ postfix_root_alias }}'
+      backup: false
+    notify: run newaliases
+    tags:
+      - postfix
+      - aliases
+
+  when:
+    - main_cf.stat.exists
+
+- name: "access table"
+  template:
+    src: 'postfix_access.j2'
+    dest: '/etc/postfix/access'
+    backup: true
+    mode: 0644
+  when: postfix_access is defined
+  notify: rebuild access table
+  tags:
+    - postfix
+    - access
+
+- name: "networks"
+  template:
+    src: 'postfix_networks.j2'
+    dest: '/etc/postfix/networks'
+    backup: true
+    mode: 0644
+  when:
+    - postfix_networks is defined
+  notify: restart postfix
+  tags:
+    - postfix
+    - networks
+
+- name: "transport table"
+  template:
+    src: 'postfix_transport.j2'
+    dest: '/etc/postfix/transport'
+    backup: true
+    mode: 0644
+  when: postfix_transport is defined
+  notify: rebuild transport table
+  tags:
+    - postfix
+    - transport

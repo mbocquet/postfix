@@ -1,0 +1,4 @@
+# {{ ansible_managed }}. role: {{ role_name }}, template: postfix_transport.j2
+
+{% if postfix_transport is defined %}{% for transport in postfix_transport %}{{ transport.domain }} {{ transport.protocol }}:{{ transport.destination }}
+{% endfor %}{% endif %}
