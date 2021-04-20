@@ -116,6 +116,19 @@
       - postfix
       - relayhost
 
+  - name: "networks"
+    lineinfile:
+      dest: '/etc/postfix/main.cf'
+      regexp: '^mynetworks.*=.*'
+      line: "mynetworks = /etc/postfix/networks"
+      backup: true
+    when:
+      - postfix_networks is defined
+    notify: restart postfix
+    tags:
+      - postfix
+      - networks
+
   - name: "root alias"
     lineinfile:
       dest: '/etc/aliases'
