@@ -54,6 +54,12 @@ postfix_packages:
 # postfix_inet_interfaces: all
 # postfix_inet_interfaces: '127.0.0.1, [::1], 192.168.1.2'
 
+# postfix_inet_protocols (see http://www.postfix.org/postconf.5.html#inet_protocols)
+# Handle postfix protocols
+# postfix_inet_protocols: all
+# postfix_inet_protocols: ipv4
+# postfix_inet_protocols: "ipv4, ipv6"
+
 # postfix_root_alias
 # root email alias
 # postfix_root_alias: 'me@mydomain.net'
