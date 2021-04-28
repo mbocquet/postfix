@@ -76,9 +76,9 @@
       backup: true
     loop:
       - name: inet_interfaces
-        value: "{{ postfix_inet_interfaces }}"
+        value: "{{ postfix_inet_interfaces | default('{{ __postfix_inet_interfaces }}') }}"
       - name: inet_protocols
-        value: "{{ postfix_inet_protocols }}"
+        value: "{{ postfix_inet_protocols | default('{{ __postfix_inet_protocols }}') }}"
     notify: restart postfix
     tags:
       - postfix
