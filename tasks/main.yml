@@ -68,18 +68,22 @@
     - main_cf
 
 - block:
-  - name: "interfaces"
+  - name: main.cf
     lineinfile:
       dest: /etc/postfix/main.cf
-      regexp: '^inet_interfaces.*=.*'
-      line: 'inet_interfaces = {{ postfix_inet_interfaces }}'
+      regexp: "^{{ item.name }} ="
+      line: "{{ item.name }} = {{ item.value }}"
       backup: true
-    when:
-      - postfix_inet_interfaces is defined
+    loop:
+      - name: inet_interfaces
+        value: "{{ postfix_inet_interfaces }}"
+      - name: inet_protocols
+        value: "{{ postfix_inet_protocols }}"
     notify: restart postfix
     tags:
       - postfix
-      - interfaces
+      - main.cf
+      - configuration
 
   - name: "myorigin"
     lineinfile:
