@@ -1,2 +1,5 @@
 ---
 # vars file for postfix
+
+__postfix_inet_interfaces: loopback-only
+__postfix_inet_protocols: all
