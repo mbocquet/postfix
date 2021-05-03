@@ -65,13 +65,13 @@
   register: main_cf
   tags:
     - postfix
-    - main_cf
+    - main.cf
 
 - block:
   - name: main.cf
     lineinfile:
       dest: /etc/postfix/main.cf
-      regexp: "^{{ item.name }} ="
+      regexp: "^{{ item.name }}\\s*="
       line: "{{ item.name }} = {{ item.value }}"
       backup: true
     loop:
@@ -79,11 +79,37 @@
         value: "{{ postfix_inet_interfaces | default('{{ __postfix_inet_interfaces }}') }}"
       - name: inet_protocols
         value: "{{ postfix_inet_protocols | default('{{ __postfix_inet_protocols }}') }}"
+      - name: smtpd_relay_restrictions
+        value: "{{ postfix_smtpd_relay_restrictions | join (' ') }}"
     notify: restart postfix
     tags:
       - postfix
       - main.cf
       - configuration
+      - local
+      - satellite
+
+  - name: main.cf
+    lineinfile:
+      dest: /etc/postfix/main.cf
+      regexp: "^{{ item.name }}\\s*="
+      line: "{{ item.name }} = {{ item.value }}"
+      backup: true
+    loop:
+      - name: smtpd_helo_restrictions
+        value: "{{ postfix_smtpd_helo_restrictions | join (' ') }}"
+      - name: smtpd_recipient_restrictions
+        value: "{{ postfix_smtpd_recipient_restrictions | join (' ') }}"
+      - name: smtpd_sender_restrictions
+        value: "{{ postfix_smtpd_sender_restrictions | join (' ') }}"
+    when:
+      - postfix_main_mailer_type in ["Internet Site","Internet with smarthost"]
+    notify: restart postfix
+    tags:
+      - postfix
+      - main.cf
+      - configuration
+      - internet
 
   - name: "myorigin"
     lineinfile:

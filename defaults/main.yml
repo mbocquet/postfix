@@ -64,3 +64,31 @@ postfix_packages:
 # root email alias
 # postfix_root_alias: 'me@mydomain.net'
 # postfix_root_alias: 'me@mydomain.net, them@theirdomain.net'
+
+postfix_smtpd_relay_restrictions:
+  - permit_mynetworks
+  - permit_sasl_authenticated
+  - defer_unauth_destination
+
+# only useful to "Internet*" postfix_main_mailer_type
+# postfix_smtpd_helo_restrictions:
+#   - permit_mynetworks
+#   - permit_sasl_authenticated
+#   - reject_invalid_helo_hostname
+#   - reject_non_fqdn_helo_hostname
+
+# only useful to "Internet*" postfix_main_mailer_type
+# postfix_smtpd_recipient_restrictions:
+#   - permit_mynetworks
+#   - permit_sasl_authenticated
+#   - reject_non_fqdn_recipient
+#   - reject_unknown_recipient_domain
+#   - reject_unlisted_recipient
+#   - reject_unauth_destination
+
+# only useful to "Internet*" postfix_main_mailer_type
+# postfix_smtpd_sender_restrictions:
+#   - permit_mynetworks
+#   - permit_sasl_authenticated
+#   - reject_non_fqdn_sender
+#   - reject_unknown_sender_domain
