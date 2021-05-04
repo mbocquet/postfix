@@ -65,6 +65,7 @@
   notify: reload nginx
   loop: '{{ nginx_sites }}'
   when:
+    - not ansible_check_mode
     - item.available is not defined
       or item.available|lower in ['yes', 'true']
     - item.enabled is not defined
