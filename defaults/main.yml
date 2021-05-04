@@ -92,3 +92,7 @@ postfix_smtpd_relay_restrictions:
 #   - permit_sasl_authenticated
 #   - reject_non_fqdn_sender
 #   - reject_unknown_sender_domain
+
+# Certificate informations
+postfix_tls_cert: /etc/ssl/certs/cert.pem
+postfix_tls_key: /etc/ssl/private/cert.key

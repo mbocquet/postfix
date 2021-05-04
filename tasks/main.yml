@@ -102,6 +102,10 @@
         value: "{{ postfix_smtpd_recipient_restrictions | join (' ') }}"
       - name: smtpd_sender_restrictions
         value: "{{ postfix_smtpd_sender_restrictions | join (' ') }}"
+      - name: smtpd_tls_cert_file
+        value: "{{ postfix_tls_cert }}"
+      - name: smtpd_tls_key_file
+        value: "{{ postfix_tls_key }}"
     when:
       - postfix_main_mailer_type in ["Internet Site","Internet with smarthost"]
     notify: restart postfix
