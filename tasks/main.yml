@@ -20,8 +20,8 @@
 
 - name: "openssl_dhparam"
   openssl_dhparam:
-    path: '{{ nginx_dhparam_file | default("/etc/ssl/dhparams.pem") }}'
-    size: '{{ nginx_dhparam.bits | default(omit) }}'
+    path: "{{ nginx_dhparam_file | default('/etc/ssl/dhparams.pem') }}"
+    size: "{{ nginx_dhparam.bits | default(omit) }}"
   become: true
   tags:
     - nginx
@@ -31,11 +31,11 @@
 - block:
   - name: "vhost"
     template:
-      src: 'nginx-{{ item.template | default("generic") }}.conf.j2'
-      dest: '/etc/nginx/sites-available/{{ item.name }}'
+      src: "nginx-{{ item.template | default('generic') }}.conf.j2"
+      dest: "/etc/nginx/sites-available/{{ item.name }}"
       mode: 0644
     notify: reload nginx
-    loop: '{{ nginx_sites }}'
+    loop: "{{ nginx_sites }}"
     when:
       - item.name != 'default'
       - item.available is not defined
@@ -48,9 +48,9 @@
 
   - name: "vhost absence"
     file:
-      path: '/etc/nginx/sites-available/{{ item.name }}'
+      path: "/etc/nginx/sites-available/{{ item.name }}"
       state: absent
-    loop: '{{ nginx_sites }}'
+    loop: "{{ nginx_sites }}"
     when:
       - item.available is defined
       - item.available|lower in ['no', 'false']
@@ -62,11 +62,11 @@
 
   - name: "link presence"
     file:
-      src: '/etc/nginx/sites-available/{{ item.name }}'
-      path: '/etc/nginx/sites-enabled/{{ item.index|default("") }}{{ item.name }}'
-      state: 'link'
+      src: "/etc/nginx/sites-available/{{ item.name }}"
+      path: "/etc/nginx/sites-enabled/{{ item.index | default('') }}{{ item.name }}"
+      state: link
     notify: reload nginx
-    loop: '{{ nginx_sites }}'
+    loop: "{{ nginx_sites }}"
     when:
       - not ansible_check_mode
       - item.available is not defined
@@ -81,10 +81,10 @@
 
   - name: "link absence"
     file:
-      path: '/etc/nginx/sites-enabled/{{ item.index|default("") }}{{ item.name }}'
+      path: "/etc/nginx/sites-enabled/{{ item.index | default('') }}{{ item.name }}"
       state: absent
     notify: reload nginx
-    loop: '{{ nginx_sites }}'
+    loop: "{{ nginx_sites }}"
     when:
       - item.enabled is defined
       - item.enabled|lower in ['no', 'false']
