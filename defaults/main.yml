@@ -2,18 +2,18 @@
 # defaults file for nginx
 
 # nginx_dhparam : parameters to construct nginx dhparam file
-nginx_dhparam:
-  path: /etc/nginx
-  name: dhparam
-  bits: 2048
+# nginx_dhparam:
+#   path: /etc/ssl
+#   name: dhparams
+#   bits: 4096
 
 # nginx_dhparam_file : here we use the previous parameters to set the dhparam
 # file path and name.
 #
-# to use /etc/nginx/dhparam2048.pem :
-nginx_dhparam_file: "{{ nginx_dhparam.path }}/{{ nginx_dhparam.name }}{{ nginx_dhparam.bits }}.pem"
+# to use /etc/nginx/dhparam4096.pem
+# nginx_dhparam_file: "{{ nginx_dhparam.path }}/{{ nginx_dhparam.name }}{{ nginx_dhparam.bits }}.pem"
 #
-# to use /etc/nginx/dhparam.pem :
+# to use /etc/nginx/dhparams.pem :
 # nginx_dhparam_file: "{{ nginx_dhparam.path }}/{{ nginx_dhparam.name }}.pem"
 
 # nginx_sites : dict variable to define sites
