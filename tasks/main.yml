@@ -44,6 +44,13 @@
     - postfix
     - package
 
+- name: package_facts
+  package_facts:
+    manager: auto
+  tags:
+    - postfix
+    - facts
+
 - name: "/etc/mailname"
   lineinfile:
     dest: '/etc/mailname'
