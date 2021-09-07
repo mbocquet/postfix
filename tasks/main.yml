@@ -28,71 +28,69 @@
     - ssl
     - dhparam
 
-- block:
-  - name: "vhost"
-    template:
-      src: "nginx-{{ item.template | default('generic') }}.conf.j2"
-      dest: "/etc/nginx/sites-available/{{ item.name }}"
-      mode: 0644
-    notify: reload nginx
-    loop: "{{ nginx_sites }}"
-    when:
-      - item.name != 'default'
-      - item.available is not defined
-        or item.available|lower in ['yes', 'true']
-    become: true
-    tags:
-      - nginx
-      - vhost
-      - template
+- name: vhost
+  block:
+    - name: "vhost"
+      template:
+        src: "nginx-{{ item.template | default('generic') }}.conf.j2"
+        dest: "/etc/nginx/sites-available/{{ item.name }}"
+        mode: 0644
+      notify: reload nginx
+      loop: "{{ nginx_sites }}"
+      when:
+        - item.name != 'default'
+        - item.available is not defined
+          or item.available|lower in ['yes', 'true']
+      tags:
+        - nginx
+        - vhost
+        - template
 
-  - name: "vhost absence"
-    file:
-      path: "/etc/nginx/sites-available/{{ item.name }}"
-      state: absent
-    loop: "{{ nginx_sites }}"
-    when:
-      - item.available is defined
-      - item.available|lower in ['no', 'false']
-    become: true
-    tags:
-      - nginx
-      - vhost
-      - template
+    - name: "vhost absence"
+      file:
+        path: "/etc/nginx/sites-available/{{ item.name }}"
+        state: absent
+      loop: "{{ nginx_sites }}"
+      when:
+        - item.available is defined
+        - item.available|lower in ['no', 'false']
+      tags:
+        - nginx
+        - vhost
+        - template
 
-  - name: "link presence"
-    file:
-      src: "/etc/nginx/sites-available/{{ item.name }}"
-      path: "/etc/nginx/sites-enabled/{{ item.index | default('') }}{{ item.name }}"
-      state: link
-    notify: reload nginx
-    loop: "{{ nginx_sites }}"
-    when:
-      - not ansible_check_mode
-      - item.available is not defined
-        or item.available|lower in ['yes', 'true']
-      - item.enabled is not defined
-        or item.enabled|lower in ['yes', 'true']
-    become: true
-    tags:
-      - nginx
-      - vhost
-      - link
+    - name: "link presence"
+      file:
+        src: "/etc/nginx/sites-available/{{ item.name }}"
+        path: "/etc/nginx/sites-enabled/{{ item.index | default('') }}{{ item.name }}"
+        state: link
+      notify: reload nginx
+      loop: "{{ nginx_sites }}"
+      when:
+        - not ansible_check_mode
+        - item.available is not defined
+          or item.available|lower in ['yes', 'true']
+        - item.enabled is not defined
+          or item.enabled|lower in ['yes', 'true']
+      tags:
+        - nginx
+        - vhost
+        - link
 
-  - name: "link absence"
-    file:
-      path: "/etc/nginx/sites-enabled/{{ item.index | default('') }}{{ item.name }}"
-      state: absent
-    notify: reload nginx
-    loop: "{{ nginx_sites }}"
-    when:
-      - item.enabled is defined
-      - item.enabled|lower in ['no', 'false']
-    become: true
-    tags:
-      - nginx
-      - vhost
-      - link
+    - name: "link absence"
+      file:
+        path: "/etc/nginx/sites-enabled/{{ item.index | default('') }}{{ item.name }}"
+        state: absent
+      notify: reload nginx
+      loop: "{{ nginx_sites }}"
+      when:
+        - item.enabled is defined
+        - item.enabled|lower in ['no', 'false']
+      tags:
+        - nginx
+        - vhost
+        - link
 
   when:
     - nginx_installed is succeeded
+  become: true
