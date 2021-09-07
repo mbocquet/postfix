@@ -74,111 +74,112 @@
     - postfix
     - main.cf
 
-- block:
-  - name: main.cf
-    lineinfile:
-      dest: /etc/postfix/main.cf
-      regexp: "^{{ item.name }}\\s*="
-      line: "{{ item.name }} = {{ item.value }}"
-      backup: true
-    loop:
-      - name: inet_interfaces
-        value: "{{ postfix_inet_interfaces | default('{{ __postfix_inet_interfaces }}') }}"
-      - name: inet_protocols
-        value: "{{ postfix_inet_protocols | default('{{ __postfix_inet_protocols }}') }}"
-      - name: smtpd_relay_restrictions
-        value: "{{ postfix_smtpd_relay_restrictions | join (' ') }}"
-    notify: restart postfix
-    tags:
-      - postfix
-      - main.cf
-      - configuration
-      - local
-      - satellite
+- name: main.cf
+  block:
+    - name: main.cf
+      lineinfile:
+        dest: /etc/postfix/main.cf
+        regexp: "^{{ item.name }}\\s*="
+        line: "{{ item.name }} = {{ item.value }}"
+        backup: true
+      loop:
+        - name: inet_interfaces
+          value: "{{ postfix_inet_interfaces | default('{{ __postfix_inet_interfaces }}') }}"
+        - name: inet_protocols
+          value: "{{ postfix_inet_protocols | default('{{ __postfix_inet_protocols }}') }}"
+        - name: smtpd_relay_restrictions
+          value: "{{ postfix_smtpd_relay_restrictions | join (' ') }}"
+      notify: restart postfix
+      tags:
+        - postfix
+        - main.cf
+        - configuration
+        - local
+        - satellite
 
-  - name: main.cf
-    lineinfile:
-      dest: /etc/postfix/main.cf
-      regexp: "^{{ item.name }}\\s*="
-      line: "{{ item.name }} = {{ item.value }}"
-      backup: true
-    loop:
-      - name: smtpd_helo_restrictions
-        value: "{{ postfix_smtpd_helo_restrictions | join (' ') }}"
-      - name: smtpd_recipient_restrictions
-        value: "{{ postfix_smtpd_recipient_restrictions | join (' ') }}"
-      - name: smtpd_sender_restrictions
-        value: "{{ postfix_smtpd_sender_restrictions | join (' ') }}"
-      - name: smtpd_tls_cert_file
-        value: "{{ postfix_tls_cert }}"
-      - name: smtpd_tls_key_file
-        value: "{{ postfix_tls_key }}"
-    when:
-      - postfix_main_mailer_type in ["Internet Site","Internet with smarthost"]
-    notify: restart postfix
-    tags:
-      - postfix
-      - main.cf
-      - configuration
-      - internet
+    - name: main.cf
+      lineinfile:
+        dest: /etc/postfix/main.cf
+        regexp: "^{{ item.name }}\\s*="
+        line: "{{ item.name }} = {{ item.value }}"
+        backup: true
+      loop:
+        - name: smtpd_helo_restrictions
+          value: "{{ postfix_smtpd_helo_restrictions | join (' ') }}"
+        - name: smtpd_recipient_restrictions
+          value: "{{ postfix_smtpd_recipient_restrictions | join (' ') }}"
+        - name: smtpd_sender_restrictions
+          value: "{{ postfix_smtpd_sender_restrictions | join (' ') }}"
+        - name: smtpd_tls_cert_file
+          value: "{{ postfix_tls_cert }}"
+        - name: smtpd_tls_key_file
+          value: "{{ postfix_tls_key }}"
+      when:
+        - postfix_main_mailer_type in ["Internet Site","Internet with smarthost"]
+      notify: restart postfix
+      tags:
+        - postfix
+        - main.cf
+        - configuration
+        - internet
 
-  - name: "myorigin"
-    lineinfile:
-      dest: '/etc/postfix/main.cf'
-      regexp: '^myorigin.*=.*'
-      line: 'myorigin = /etc/mailname'
-      backup: true
-    notify: restart postfix
-    tags:
-      - postfix
-      - destination
+    - name: "myorigin"
+      lineinfile:
+        dest: '/etc/postfix/main.cf'
+        regexp: '^myorigin.*=.*'
+        line: 'myorigin = /etc/mailname'
+        backup: true
+      notify: restart postfix
+      tags:
+        - postfix
+        - destination
 
-  - name: "destination"
-    lineinfile:
-      dest: '/etc/postfix/main.cf'
-      regexp: '^mydestination.*=.*'
-      line: 'mydestination ='
-      backup: true
-    notify: restart postfix
-    tags:
-      - postfix
-      - destination
+    - name: "destination"
+      lineinfile:
+        dest: '/etc/postfix/main.cf'
+        regexp: '^mydestination.*=.*'
+        line: 'mydestination ='
+        backup: true
+      notify: restart postfix
+      tags:
+        - postfix
+        - destination
 
-  - name: "relayhost"
-    lineinfile:
-      dest: '/etc/postfix/main.cf'
-      regexp: '^relayhost.*=.*'
-      line: "relayhost = {{ postfix_relayhost }}"
-      backup: true
-    when:
-      - postfix_relayhost is defined
-    notify: restart postfix
-    tags:
-      - postfix
-      - relayhost
+    - name: "relayhost"
+      lineinfile:
+        dest: '/etc/postfix/main.cf'
+        regexp: '^relayhost.*=.*'
+        line: "relayhost = {{ postfix_relayhost }}"
+        backup: true
+      when:
+        - postfix_relayhost is defined
+      notify: restart postfix
+      tags:
+        - postfix
+        - relayhost
 
-  - name: "networks"
-    lineinfile:
-      dest: '/etc/postfix/main.cf'
-      regexp: '^mynetworks.*=.*'
-      line: "mynetworks = /etc/postfix/networks"
-      backup: true
-    when:
-      - postfix_networks is defined
-    notify: restart postfix
-    tags:
-      - postfix
-      - networks
+    - name: "networks"
+      lineinfile:
+        dest: '/etc/postfix/main.cf'
+        regexp: '^mynetworks.*=.*'
+        line: "mynetworks = /etc/postfix/networks"
+        backup: true
+      when:
+        - postfix_networks is defined
+      notify: restart postfix
+      tags:
+        - postfix
+        - networks
 
-  - name: "root alias"
-    lineinfile:
-      dest: '/etc/aliases'
-      line: 'root: {{ postfix_root_alias }}'
-      backup: false
-    notify: run newaliases
-    tags:
-      - postfix
-      - aliases
+    - name: "root alias"
+      lineinfile:
+        dest: '/etc/aliases'
+        line: 'root: {{ postfix_root_alias }}'
+        backup: false
+      notify: run newaliases
+      tags:
+        - postfix
+        - aliases
 
   when:
     - main_cf.stat.exists
