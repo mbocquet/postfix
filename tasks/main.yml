@@ -62,7 +62,9 @@
     - name: "link presence"
       file:
         src: "/etc/nginx/sites-available/{{ item.name }}"
-        path: "/etc/nginx/sites-enabled/{{ item.index | default('') }}{{ item.name }}"
+        path:
+          "/etc/nginx/sites-enabled/{{ item.index |
+          default('') }}{{ item.name }}"
         state: link
       notify: reload nginx
       loop: "{{ nginx_sites }}"
@@ -79,7 +81,9 @@
 
     - name: "link absence"
       file:
-        path: "/etc/nginx/sites-enabled/{{ item.index | default('') }}{{ item.name }}"
+        path:
+          "/etc/nginx/sites-enabled/{{ item.index |
+          default('') }}{{ item.name }}"
         state: absent
       notify: reload nginx
       loop: "{{ nginx_sites }}"

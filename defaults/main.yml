@@ -11,7 +11,9 @@ nginx_dhparam:
 # file path and name.
 #
 # to use /etc/ssl/dhparam4096.pem
-# nginx_dhparam_file: "{{ nginx_dhparam.path }}/{{ nginx_dhparam.name }}{{ nginx_dhparam.bits }}.pem"
+# nginx_dhparam_file:
+#   "{{ nginx_dhparam.path }}/{{ nginx_dhparam.name }}{{ nginx_dhparam.bits }}
+#   .pem"
 #
 # to use /etc/nginx/dhparams.pem :
 # nginx_dhparam_file: "/etc/nginx/{{ nginx_dhparam.name }}.pem"
