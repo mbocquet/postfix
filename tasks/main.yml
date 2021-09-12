@@ -30,8 +30,10 @@
     value: "{{ postfix_main_mailer_type | default('No configuration') }}"
     vtype: select
   when:
-    - postfix_main_mailer_type is undefined
-      or postfix_main_mailer_type in ["No configuration","Internet Site","Internet with smarthost","Satellite system","Local only"]
+    postfix_main_mailer_type is undefined or
+    postfix_main_mailer_type in ["No configuration","Internet Site","Internet
+    with smarthost","Satellite system","Local only"]
+
   tags:
     - postfix
     - mailertype
@@ -84,9 +86,13 @@
         backup: true
       loop:
         - name: inet_interfaces
-          value: "{{ postfix_inet_interfaces | default('{{ __postfix_inet_interfaces }}') }}"
+          value:
+            "{{ postfix_inet_interfaces |
+            default('{{ __postfix_inet_interfaces }}') }}"
         - name: inet_protocols
-          value: "{{ postfix_inet_protocols | default('{{ __postfix_inet_protocols }}') }}"
+          value:
+            "{{ postfix_inet_protocols |
+            default('{{ __postfix_inet_protocols }}') }}"
         - name: smtpd_relay_restrictions
           value: "{{ postfix_smtpd_relay_restrictions | join (' ') }}"
       notify: restart postfix
@@ -115,7 +121,7 @@
         - name: smtpd_tls_key_file
           value: "{{ postfix_tls_key }}"
       when:
-        - postfix_main_mailer_type in ["Internet Site","Internet with smarthost"]
+        postfix_main_mailer_type in ["Internet Site","Internet with smarthost"]
       notify: restart postfix
       tags:
         - postfix

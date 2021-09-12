@@ -20,8 +20,12 @@
     from: "root@{{ postfix_domain }}"
     to: "root@{{ postfix_domain }}"
     subject: '{{ ansible_hostname }} can send emails'
-    body: 'If you receive this, SMTP is configured by Ansible role "{{ role_name }}" on {{ ansible_hostname }}.'
-  when: postfix_main_mailer_type is defined and postfix_main_mailer_type != "No configuration"
+    body:
+      'If you receive this, SMTP is configured by Ansible role "{{ role_name }}"
+      on {{ ansible_hostname }}.'
+  when:
+    - postfix_main_mailer_type is defined
+    - postfix_main_mailer_type != "No configuration"
 
 - name: "run newaliases"
   command: newaliases
