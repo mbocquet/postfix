@@ -4,8 +4,12 @@
   service:
     name: nginx
     state: restarted
+  when:
+    - "'nginx.service' in services"
 
 - name: reload nginx
   service:
     name: nginx
     state: reloaded
+  when:
+    - "'nginx.service' in services"

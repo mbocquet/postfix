@@ -4,19 +4,15 @@
   package:
     name: nginx
   become: true
-  register: nginx_installed
   tags:
     - nginx
     - package
 
-- name: "service"
-  service:
-    name: nginx
-    enabled: true
-  become: true
+- name: service_facts
+  ansible.builtin.service_facts:
   tags:
     - nginx
-    - service
+    - facts
 
 - name: "openssl_dhparam"
   openssl_dhparam:
@@ -95,6 +91,6 @@
         - vhost
         - link
 
-  when:
-    - nginx_installed is succeeded
+  # when:
+  #   - "'nginx.service' in services"
   become: true
