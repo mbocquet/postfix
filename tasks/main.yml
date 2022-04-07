@@ -41,7 +41,6 @@
 - name: "package"
   package:
     name: "{{ postfix_packages }}"
-  notify: send test email
   tags:
     - postfix
     - package
@@ -172,6 +171,19 @@
         backup: true
       when:
         - postfix_networks is defined
+      notify: restart postfix
+      tags:
+        - postfix
+        - networks
+
+    - name: "message size limit"
+      lineinfile:
+        dest: '/etc/postfix/main.cf'
+        regexp: '^message_size_limit.*=.*'
+        line: "message_size_limit = {{ postfix_message_size_limit }}"
+        backup: true
+      when:
+        - postfix_message_size_limit is defined
       notify: restart postfix
       tags:
         - postfix
