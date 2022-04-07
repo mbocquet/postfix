@@ -26,6 +26,9 @@
   when:
     - postfix_main_mailer_type is defined
     - postfix_main_mailer_type != "No configuration"
+  tags:
+    - postfix
+    - test
 
 - name: "run newaliases"
   command: newaliases
