@@ -227,6 +227,7 @@
     - name: "root alias"
       lineinfile:
         dest: '/etc/aliases'
+        regexp: '^root:'
         line: 'root: {{ postfix_root_alias }}'
         backup: false
       notify: run newaliases
