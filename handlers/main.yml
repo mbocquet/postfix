@@ -14,7 +14,7 @@
     - "'postfix' in ansible_facts.packages"
 
 - name: "send test email"
-  mail:
+  community.general.mail:
     host: 'localhost'
     port: 25
     from: "root@{{ postfix_domain }}"

@@ -93,7 +93,7 @@
             "{{ postfix_inet_protocols |
             default('{{ __postfix_inet_protocols }}') }}"
         - name: smtpd_relay_restrictions
-          value: "{{ postfix_smtpd_relay_restrictions | join (' ') }}"
+          value: "{{ postfix_smtpd_relay_restrictions | join(' ') }}"
       notify: restart postfix
       tags:
         - postfix
@@ -110,9 +110,9 @@
         backup: true
       loop:
         - name: smtpd_helo_restrictions
-          value: "{{ postfix_smtpd_helo_restrictions | join (' ') }}"
+          value: "{{ postfix_smtpd_helo_restrictions | join(' ') }}"
         - name: smtpd_sender_restrictions
-          value: "{{ postfix_smtpd_sender_restrictions | join (' ') }}"
+          value: "{{ postfix_smtpd_sender_restrictions | join(' ') }}"
         - name: smtpd_tls_cert_file
           value: "{{ postfix_tls_cert }}"
         - name: smtpd_tls_key_file
@@ -134,7 +134,7 @@
         backup: true
       loop:
         - name: smtpd_recipient_restrictions
-          value: "{{ postfix_smtpd_recipient_restrictions | join (' ') }}"
+          value: "{{ postfix_smtpd_recipient_restrictions | join(' ') }}"
       when:
         - postfix_smtpd_recipient_restrictions is defined
         - postfix_smtpd_recipient_restrictions | length > 0
