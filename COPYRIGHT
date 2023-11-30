@@ -1,6 +1,6 @@
 'postfix'. Ansible role to install and configure postfix.
 
-Copyright © 2016-2021 Mathias Bocquet (mbocquet@sekoya.org)
+Copyright © 2016-2023 Mathias Bocquet (mbocquet@sekoya.org)
 
 This file is part of 'postfix' Ansible role.
 
