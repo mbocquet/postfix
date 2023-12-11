@@ -51,6 +51,7 @@
   tags:
     - postfix
     - facts
+    - core
 
 - name: "/etc/mailname"
   lineinfile:
@@ -74,6 +75,7 @@
   tags:
     - postfix
     - main.cf
+    - core
 
 - name: main.cf
   block:
