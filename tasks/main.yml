@@ -78,6 +78,8 @@
     - core
 
 - name: main.cf
+  when:
+    - main_cf.stat.exists
   block:
     - name: main.cf
       lineinfile:
@@ -236,9 +238,6 @@
       tags:
         - postfix
         - aliases
-
-  when:
-    - main_cf.stat.exists
 
 - name: "access table"
   template:
