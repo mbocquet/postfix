@@ -1,28 +1,29 @@
 ---
 # handlers file for postfix
 
-- name: "reconfigure"
+- name: Reconfigure
   command: dpkg-reconfigure --frontend=noninteractive postfix
-  notify: restart postfix
+  changed_when: true
+  notify: Restart postfix
 
-- name: "restart postfix"
+- name: Restart postfix
   service:
-    name: 'postfix'
-    state: 'restarted'
+    name: postfix
+    state: restarted
   notify: send test email
   when:
     - "'postfix' in ansible_facts.packages"
 
-- name: "send test email"
+- name: Send test email
   community.general.mail:
-    host: 'localhost'
+    host: localhost
     port: 25
     from: "root@{{ postfix_domain }}"
     to: "root@{{ postfix_domain }}"
-    subject: '{{ ansible_hostname }} can send emails'
+    subject: "{{ ansible_hostname }} can send emails"
     body:
-      'If you receive this, SMTP is configured by Ansible role "{{ role_name }}"
-      on {{ ansible_hostname }}.'
+      "If you receive this, SMTP is configured by Ansible role {{ role_name }}
+      on {{ ansible_hostname }}."
   when:
     - postfix_main_mailer_type is defined
     - postfix_main_mailer_type != "No configuration"
@@ -30,11 +31,14 @@
     - postfix
     - test
 
-- name: "run newaliases"
+- name: Run newaliases
   command: newaliases
+  changed_when: true
 
-- name: "rebuild access table"
+- name: Rebuild access table
   command: postmap /etc/postfix/access
+  changed_when: true
 
-- name: "rebuild transport table"
+- name: Rebuild transport table
   command: postmap /etc/postfix/transport
+  changed_when: true
