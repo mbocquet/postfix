@@ -1,7 +1,6 @@
 ---
 # tasks file for postfix
-
-- name: "destinations (debconf)"
+- name: "Destinations (debconf)"
   debconf:
     name: postfix
     question: postfix/destinations
@@ -11,7 +10,7 @@
     - postfix
     - destination
 
-- name: "relayhost (debconf)"
+- name: "Relayhost (debconf)"
   debconf:
     name: postfix
     question: postfix/relayhost
@@ -23,7 +22,7 @@
     - postfix
     - relayhost
 
-- name: "main mailer type (debconf)"
+- name: "Main mailer type (debconf)"
   debconf:
     name: postfix
     question: postfix/main_mailer_type
@@ -38,14 +37,14 @@
     - postfix
     - mailertype
 
-- name: "package"
+- name: Package
   package:
     name: "{{ postfix_packages }}"
   tags:
     - postfix
     - package
 
-- name: package_facts
+- name: Package facts
   package_facts:
     manager: auto
   tags:
@@ -53,22 +52,22 @@
     - facts
     - core
 
-- name: "/etc/mailname"
+- name: /etc/mailname
   lineinfile:
-    dest: '/etc/mailname'
+    dest: /etc/mailname
     regexp: '^.*$'
-    line: '{{ postfix_domain }}'
+    line: "{{ postfix_domain }}"
     backup: true
     create: true
     mode: 0644
   when:
     - postfix_domain is defined
-  notify: restart postfix
+  notify: Restart postfix
   tags:
     - postfix
     - domain
 
-- name: "check main.cf"
+- name: Check main.cf
   stat:
     path: /etc/postfix/main.cf
   register: main_cf
@@ -77,7 +76,7 @@
     - main.cf
     - core
 
-- name: main.cf
+- name: Handle main.cf
   when:
     - main_cf.stat.exists
   block:
@@ -98,7 +97,7 @@
             default('{{ __postfix_inet_protocols }}') }}"
         - name: smtpd_relay_restrictions
           value: "{{ postfix_smtpd_relay_restrictions | join(' ') }}"
-      notify: restart postfix
+      notify: Restart postfix
       tags:
         - postfix
         - main.cf
@@ -123,7 +122,7 @@
           value: "{{ postfix_tls_key }}"
       when:
         postfix_main_mailer_type in ["Internet Site","Internet with smarthost"]
-      notify: restart postfix
+      notify: Restart postfix
       tags:
         - postfix
         - main.cf
@@ -142,7 +141,7 @@
       when:
         - postfix_smtpd_recipient_restrictions is defined
         - postfix_smtpd_recipient_restrictions | length > 0
-      notify: restart postfix
+      notify: Restart postfix
       tags:
         - postfix
         - main.cf
@@ -160,118 +159,118 @@
       when:
         postfix_smtpd_recipient_restrictions is undefined or
         postfix_smtpd_recipient_restrictions | length == 0
-      notify: restart postfix
+      notify: Restart postfix
       tags:
         - postfix
         - main.cf
         - configuration
         - internet
 
-    - name: "myorigin"
+    - name: Myorigin
       lineinfile:
-        dest: '/etc/postfix/main.cf'
+        dest: /etc/postfix/main.cf
         regexp: '^myorigin.*=.*'
         line: 'myorigin = /etc/mailname'
         backup: true
-      notify: restart postfix
+      notify: Restart postfix
       tags:
         - postfix
         - destination
 
-    - name: "destination"
+    - name: Destination
       lineinfile:
-        dest: '/etc/postfix/main.cf'
+        dest: /etc/postfix/main.cf
         regexp: '^mydestination.*=.*'
         line: 'mydestination ='
         backup: true
-      notify: restart postfix
+      notify: Restart postfix
       tags:
         - postfix
         - destination
 
-    - name: "relayhost"
+    - name: Relayhost
       lineinfile:
-        dest: '/etc/postfix/main.cf'
+        dest: /etc/postfix/main.cf
         regexp: '^relayhost.*=.*'
         line: "relayhost = {{ postfix_relayhost }}"
         backup: true
       when:
         - postfix_relayhost is defined
-      notify: restart postfix
+      notify: Restart postfix
       tags:
         - postfix
         - relayhost
 
-    - name: "networks"
+    - name: Networks
       lineinfile:
-        dest: '/etc/postfix/main.cf'
+        dest: /etc/postfix/main.cf
         regexp: '^mynetworks.*=.*'
         line: "mynetworks = /etc/postfix/networks"
         backup: true
       when:
         - postfix_networks is defined
-      notify: restart postfix
+      notify: Restart postfix
       tags:
         - postfix
         - networks
 
-    - name: "message size limit"
+    - name: Message size limit
       lineinfile:
-        dest: '/etc/postfix/main.cf'
+        dest: /etc/postfix/main.cf
         regexp: '^message_size_limit.*=.*'
         line: "message_size_limit = {{ postfix_message_size_limit }}"
         backup: true
       when:
         - postfix_message_size_limit is defined
-      notify: restart postfix
+      notify: Restart postfix
       tags:
         - postfix
         - networks
 
-    - name: "root alias"
+    - name: Root alias
       lineinfile:
-        dest: '/etc/aliases'
+        dest: /etc/aliases
         regexp: '^root:'
         line: 'root: {{ postfix_root_alias }}'
         backup: false
-      notify: run newaliases
+      notify: Run newaliases
       tags:
         - postfix
         - aliases
 
-- name: "access table"
+- name: Access table
   template:
-    src: 'postfix_access.j2'
-    dest: '/etc/postfix/access'
+    src: postfix_access.j2
+    dest: /etc/postfix/access
     backup: true
     mode: 0644
   when: postfix_access is defined
-  notify: rebuild access table
+  notify: Rebuild access table
   tags:
     - postfix
     - access
 
-- name: "networks"
+- name: Networks
   template:
-    src: 'postfix_networks.j2'
-    dest: '/etc/postfix/networks'
+    src: postfix_networks.j2
+    dest: /etc/postfix/networks
     backup: true
     mode: 0644
   when:
     - postfix_networks is defined
-  notify: restart postfix
+  notify: Restart postfix
   tags:
     - postfix
     - networks
 
-- name: "transport table"
+- name: Transport table
   template:
-    src: 'postfix_transport.j2'
-    dest: '/etc/postfix/transport'
+    src: postfix_transport.j2
+    dest: /etc/postfix/transport
     backup: true
     mode: 0644
   when: postfix_transport is defined
-  notify: rebuild transport table
+  notify: Rebuild transport table
   tags:
     - postfix
     - transport
