@@ -1,12 +1,12 @@
 ---
 # handlers file for postfix
 - name: Reconfigure
-  command: dpkg-reconfigure --frontend=noninteractive postfix
+  ansible.builtin.command: dpkg-reconfigure --frontend=noninteractive postfix
   changed_when: true
   notify: Restart postfix
 
 - name: Restart postfix
-  service:
+  ansible.builtin.service:
     name: postfix
     state: restarted
   notify: Send test email
@@ -31,13 +31,13 @@
     - test
 
 - name: Run newaliases
-  command: newaliases
+  ansible.builtin.command: newaliases
   changed_when: true
 
 - name: Rebuild access table
-  command: postmap /etc/postfix/access
+  ansible.builtin.command: postmap /etc/postfix/access
   changed_when: true
 
 - name: Rebuild transport table
-  command: postmap /etc/postfix/transport
+  ansible.builtin.command: postmap /etc/postfix/transport
   changed_when: true

@@ -1,7 +1,7 @@
 ---
 # tasks file for postfix
 - name: "Destinations (debconf)"
-  debconf:
+  ansible.builtin.debconf:
     name: postfix
     question: postfix/destinations
     value: ''
@@ -11,7 +11,7 @@
     - destination
 
 - name: "Relayhost (debconf)"
-  debconf:
+  ansible.builtin.debconf:
     name: postfix
     question: postfix/relayhost
     value: "{{ postfix_relayhost }}"
@@ -23,7 +23,7 @@
     - relayhost
 
 - name: "Main mailer type (debconf)"
-  debconf:
+  ansible.builtin.debconf:
     name: postfix
     question: postfix/main_mailer_type
     value: "{{ postfix_main_mailer_type | default('No configuration') }}"
@@ -38,14 +38,14 @@
     - mailertype
 
 - name: Package
-  package:
+  ansible.builtin.package:
     name: "{{ postfix_packages }}"
   tags:
     - postfix
     - package
 
 - name: Package facts
-  package_facts:
+  ansible.builtin.package_facts:
     manager: auto
   tags:
     - postfix
@@ -53,7 +53,7 @@
     - core
 
 - name: /etc/mailname
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: /etc/mailname
     regexp: '^.*$'
     line: "{{ postfix_domain }}"
@@ -68,7 +68,7 @@
     - domain
 
 - name: Check main.cf
-  stat:
+  ansible.builtin.stat:
     path: /etc/postfix/main.cf
   register: main_cf
   tags:
@@ -81,7 +81,7 @@
     - main_cf.stat.exists
   block:
     - name: main.cf
-      lineinfile:
+      ansible.builtin.lineinfile:
         dest: /etc/postfix/main.cf
         regexp: "^{{ item.name }}\\s*="
         line: "{{ item.name }} = {{ item.value }}"
@@ -106,7 +106,7 @@
         - satellite
 
     - name: main.cf
-      lineinfile:
+      ansible.builtin.lineinfile:
         dest: /etc/postfix/main.cf
         regexp: "^{{ item.name }}\\s*="
         line: "{{ item.name }} = {{ item.value }}"
@@ -130,7 +130,7 @@
         - internet
 
     - name: main.cf
-      lineinfile:
+      ansible.builtin.lineinfile:
         dest: /etc/postfix/main.cf
         regexp: "^{{ item.name }}\\s*="
         line: "{{ item.name }} = {{ item.value }}"
@@ -149,7 +149,7 @@
         - internet
 
     - name: main.cf
-      lineinfile:
+      ansible.builtin.lineinfile:
         dest: /etc/postfix/main.cf
         regexp: "^{{ item.name }}\\s*="
         state: absent
@@ -167,7 +167,7 @@
         - internet
 
     - name: Myorigin
-      lineinfile:
+      ansible.builtin.lineinfile:
         dest: /etc/postfix/main.cf
         regexp: '^myorigin.*=.*'
         line: 'myorigin = /etc/mailname'
@@ -178,7 +178,7 @@
         - destination
 
     - name: Destination
-      lineinfile:
+      ansible.builtin.lineinfile:
         dest: /etc/postfix/main.cf
         regexp: '^mydestination.*=.*'
         line: 'mydestination ='
@@ -189,7 +189,7 @@
         - destination
 
     - name: Relayhost
-      lineinfile:
+      ansible.builtin.lineinfile:
         dest: /etc/postfix/main.cf
         regexp: '^relayhost.*=.*'
         line: "relayhost = {{ postfix_relayhost }}"
@@ -202,7 +202,7 @@
         - relayhost
 
     - name: Networks
-      lineinfile:
+      ansible.builtin.lineinfile:
         dest: /etc/postfix/main.cf
         regexp: '^mynetworks.*=.*'
         line: "mynetworks = /etc/postfix/networks"
@@ -215,7 +215,7 @@
         - networks
 
     - name: Message size limit
-      lineinfile:
+      ansible.builtin.lineinfile:
         dest: /etc/postfix/main.cf
         regexp: '^message_size_limit.*=.*'
         line: "message_size_limit = {{ postfix_message_size_limit }}"
@@ -228,7 +228,7 @@
         - networks
 
     - name: Root alias
-      lineinfile:
+      ansible.builtin.lineinfile:
         dest: /etc/aliases
         regexp: '^root:'
         line: 'root: {{ postfix_root_alias }}'
@@ -239,7 +239,7 @@
         - aliases
 
 - name: Access table
-  template:
+  ansible.builtin.template:
     src: postfix_access.j2
     dest: /etc/postfix/access
     backup: true
@@ -251,7 +251,7 @@
     - access
 
 - name: Networks
-  template:
+  ansible.builtin.template:
     src: postfix_networks.j2
     dest: /etc/postfix/networks
     backup: true
@@ -264,7 +264,7 @@
     - networks
 
 - name: Transport table
-  template:
+  ansible.builtin.template:
     src: postfix_transport.j2
     dest: /etc/postfix/transport
     backup: true
