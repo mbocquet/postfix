@@ -90,11 +90,11 @@
         - name: inet_interfaces
           value:
             "{{ postfix_inet_interfaces |
-            default('{{ __postfix_inet_interfaces }}') }}"
+            default(__postfix_inet_interfaces) }}"
         - name: inet_protocols
           value:
             "{{ postfix_inet_protocols |
-            default('{{ __postfix_inet_protocols }}') }}"
+            default(__postfix_inet_protocols) }}"
         - name: smtpd_relay_restrictions
           value: "{{ postfix_smtpd_relay_restrictions | join(' ') }}"
       notify: Restart postfix

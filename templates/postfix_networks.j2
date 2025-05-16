@@ -1,4 +1,4 @@
-# {{ ansible_managed }}. role: {{ role_name }}, template: postfix_networks.j2
+# Ansible managed. role: {{ role_name }}, template: postfix_networks.j2
 
 {% if postfix_networks is defined %}{%for network in postfix_networks %}{{ network }}
 {% endfor %}{% endif %}
