@@ -80,7 +80,7 @@
   when:
     - main_cf.stat.exists
   block:
-    - name: main.cf
+    - name: "Main config (main.cf)"
       ansible.builtin.lineinfile:
         dest: /etc/postfix/main.cf
         regexp: "^{{ item.name }}\\s*="
@@ -105,7 +105,7 @@
         - local
         - satellite
 
-    - name: main.cf
+    - name: "Main config (main.cf)"
       ansible.builtin.lineinfile:
         dest: /etc/postfix/main.cf
         regexp: "^{{ item.name }}\\s*="
@@ -129,7 +129,7 @@
         - configuration
         - internet
 
-    - name: main.cf
+    - name: "Main config (main.cf)"
       ansible.builtin.lineinfile:
         dest: /etc/postfix/main.cf
         regexp: "^{{ item.name }}\\s*="
@@ -148,7 +148,7 @@
         - configuration
         - internet
 
-    - name: main.cf
+    - name: "Main config (main.cf)"
       ansible.builtin.lineinfile:
         dest: /etc/postfix/main.cf
         regexp: "^{{ item.name }}\\s*="
