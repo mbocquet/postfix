@@ -59,7 +59,7 @@
     line: "{{ postfix_domain }}"
     backup: true
     create: true
-    mode: 0644
+    mode: "0644"
   when:
     - postfix_domain is defined
   notify: Restart postfix
@@ -243,7 +243,7 @@
     src: postfix_access.j2
     dest: /etc/postfix/access
     backup: true
-    mode: 0644
+    mode: "0644"
   when: postfix_access is defined
   notify: Rebuild access table
   tags:
@@ -255,7 +255,7 @@
     src: postfix_networks.j2
     dest: /etc/postfix/networks
     backup: true
-    mode: 0644
+    mode: "0644"
   when:
     - postfix_networks is defined
   notify: Restart postfix
@@ -268,7 +268,7 @@
     src: postfix_transport.j2
     dest: /etc/postfix/transport
     backup: true
-    mode: 0644
+    mode: "0644"
   when: postfix_transport is defined
   notify: Rebuild transport table
   tags:
