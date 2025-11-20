@@ -4,7 +4,7 @@
   ansible.builtin.debconf:
     name: postfix
     question: postfix/destinations
-    value: ''
+    value: ""
     vtype: string
   tags:
     - postfix
@@ -55,7 +55,7 @@
 - name: /etc/mailname
   ansible.builtin.lineinfile:
     dest: /etc/mailname
-    regexp: '^.*$'
+    regexp: ^.*$
     line: "{{ postfix_domain }}"
     backup: true
     create: true
@@ -169,8 +169,8 @@
     - name: Myorigin
       ansible.builtin.lineinfile:
         dest: /etc/postfix/main.cf
-        regexp: '^myorigin.*=.*'
-        line: 'myorigin = /etc/mailname'
+        regexp: ^myorigin.*=.*
+        line: myorigin = /etc/mailname
         backup: true
       notify: Restart postfix
       tags:
@@ -180,8 +180,8 @@
     - name: Destination
       ansible.builtin.lineinfile:
         dest: /etc/postfix/main.cf
-        regexp: '^mydestination.*=.*'
-        line: 'mydestination ='
+        regexp: ^mydestination.*=.*
+        line: mydestination =
         backup: true
       notify: Restart postfix
       tags:
@@ -191,7 +191,7 @@
     - name: Relayhost
       ansible.builtin.lineinfile:
         dest: /etc/postfix/main.cf
-        regexp: '^relayhost.*=.*'
+        regexp: ^relayhost.*=.*
         line: "relayhost = {{ postfix_relayhost }}"
         backup: true
       when:
@@ -204,7 +204,7 @@
     - name: Networks
       ansible.builtin.lineinfile:
         dest: /etc/postfix/main.cf
-        regexp: '^mynetworks.*=.*'
+        regexp: ^mynetworks.*=.*
         line: "mynetworks = /etc/postfix/networks"
         backup: true
       when:
@@ -217,7 +217,7 @@
     - name: Message size limit
       ansible.builtin.lineinfile:
         dest: /etc/postfix/main.cf
-        regexp: '^message_size_limit.*=.*'
+        regexp: ^message_size_limit.*=.*
         line: "message_size_limit = {{ postfix_message_size_limit }}"
         backup: true
       when:
@@ -230,8 +230,8 @@
     - name: Root alias
       ansible.builtin.lineinfile:
         dest: /etc/aliases
-        regexp: '^root:'
-        line: 'root: {{ postfix_root_alias }}'
+        regexp: "^root:"
+        line: "root: {{ postfix_root_alias }}"
         backup: false
       notify: Run newaliases
       tags:
