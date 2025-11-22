@@ -17,12 +17,12 @@
   community.general.mail:
     host: localhost
     port: 25
-    from: "root@{{ postfix_domain }}"
-    to: "root@{{ postfix_domain }}"
+    from: root@{{ postfix_domain }}
+    to: root@{{ postfix_domain }}
     subject: "{{ ansible_hostname }} can send emails"
     body:
-      "If you receive this, SMTP is configured by Ansible role {{ role_name }}
-      on {{ ansible_hostname }}."
+      If you receive this, SMTP is configured by Ansible role {{ role_name }}
+      on {{ ansible_hostname }}.
   when:
     - postfix_main_mailer_type is defined
     - postfix_main_mailer_type != "No configuration"

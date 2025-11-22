@@ -1,6 +1,6 @@
 ---
 # tasks file for postfix
-- name: "Destinations (debconf)"
+- name: Destinations | debconf
   ansible.builtin.debconf:
     name: postfix
     question: postfix/destinations
@@ -10,7 +10,7 @@
     - postfix
     - destination
 
-- name: "Relayhost (debconf)"
+- name: Relayhost | debconf
   ansible.builtin.debconf:
     name: postfix
     question: postfix/relayhost
@@ -22,7 +22,7 @@
     - postfix
     - relayhost
 
-- name: "Main mailer type (debconf)"
+- name: Main mailer type | debconf
   ansible.builtin.debconf:
     name: postfix
     question: postfix/main_mailer_type
@@ -80,10 +80,10 @@
   when:
     - main_cf.stat.exists
   block:
-    - name: "Main config (main.cf)"
+    - name: Main config | main.cf
       ansible.builtin.lineinfile:
         dest: /etc/postfix/main.cf
-        regexp: "^{{ item.name }}\\s*="
+        regexp: ^{{ item.name }}\s*=
         line: "{{ item.name }} = {{ item.value }}"
         backup: true
       loop:
@@ -105,10 +105,10 @@
         - local
         - satellite
 
-    - name: "Main config (main.cf)"
+    - name: Main config | main.cf
       ansible.builtin.lineinfile:
         dest: /etc/postfix/main.cf
-        regexp: "^{{ item.name }}\\s*="
+        regexp: ^{{ item.name }}\s*=
         line: "{{ item.name }} = {{ item.value }}"
         backup: true
       loop:
@@ -129,10 +129,10 @@
         - configuration
         - internet
 
-    - name: "Main config (main.cf)"
+    - name: Main config | main.cf
       ansible.builtin.lineinfile:
         dest: /etc/postfix/main.cf
-        regexp: "^{{ item.name }}\\s*="
+        regexp: ^{{ item.name }}\s*=
         line: "{{ item.name }} = {{ item.value }}"
         backup: true
       loop:
@@ -148,10 +148,10 @@
         - configuration
         - internet
 
-    - name: "Main config (main.cf)"
+    - name: Main config | main.cf
       ansible.builtin.lineinfile:
         dest: /etc/postfix/main.cf
-        regexp: "^{{ item.name }}\\s*="
+        regexp: ^{{ item.name }}\s*=
         state: absent
         backup: true
       loop:
@@ -166,7 +166,7 @@
         - configuration
         - internet
 
-    - name: Myorigin
+    - name: Main config | main.cf | myorigin
       ansible.builtin.lineinfile:
         dest: /etc/postfix/main.cf
         regexp: ^myorigin.*=.*
@@ -192,7 +192,7 @@
       ansible.builtin.lineinfile:
         dest: /etc/postfix/main.cf
         regexp: ^relayhost.*=.*
-        line: "relayhost = {{ postfix_relayhost }}"
+        line: relayhost = {{ postfix_relayhost }}
         backup: true
       when:
         - postfix_relayhost is defined
@@ -205,7 +205,7 @@
       ansible.builtin.lineinfile:
         dest: /etc/postfix/main.cf
         regexp: ^mynetworks.*=.*
-        line: "mynetworks = /etc/postfix/networks"
+        line: mynetworks = /etc/postfix/networks
         backup: true
       when:
         - postfix_networks is defined
@@ -218,7 +218,7 @@
       ansible.builtin.lineinfile:
         dest: /etc/postfix/main.cf
         regexp: ^message_size_limit.*=.*
-        line: "message_size_limit = {{ postfix_message_size_limit }}"
+        line: message_size_limit = {{ postfix_message_size_limit }}
         backup: true
       when:
         - postfix_message_size_limit is defined
